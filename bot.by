@@ -1,0 +1,28 @@
+from telegram import Update
+from telegram.ext import ApplicationBuilder, CommandHandler, ContextTypes, MessageHandler, filters
+import os
+
+# نأخذ التوكن من متغير البيئة لحماية البوت
+TOKEN = os.getenv("BOT_TOKEN")
+
+async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    await update.message.reply_text("أهلاً بك في بوتي! 👋")
+
+async def echo(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    text = update.message.text
+    await update.message.reply_text(f"قلت: {text}")
+
+def main():
+    app = ApplicationBuilder().token(TOKEN).build()
+
+    # أمر /start
+    app.add_handler(CommandHandler("start", start))
+
+    # رد تلقائي على أي رسالة نصية
+    app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, echo))
+
+    print("✅ البوت يعمل الآن...")
+    app.run_polling()
+
+if __name__ == "__main__":
+    main()
